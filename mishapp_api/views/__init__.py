@@ -19,8 +19,13 @@ def handle_bad_request(err):
     if data:
         err_message = data["message"]
     else:
-        err_message = "Invalid request"
+        err_message = "Bad request"
     return jsonify({"message": err_message}), 400
+
+
+@disaster_api.errorhandler(404)
+def handle_not_found(err):
+    return jsonify({"message": "Not found"}), 404
 
 
 @disaster_api.route("/disasters")
@@ -30,10 +35,13 @@ def handle_bad_request(err):
 })
 def index(args):
     docs = Disaster.objects.paginate(args["page"], min(args["per_page"], 20))
+
     return jsonify({
-        "total": docs.total,
-        "page": docs.page,
-        "per_page": docs.per_page,
+        "meta": {
+            "total": docs.total,
+            "page": docs.page,
+            "per_page": docs.per_page,
+        },
         "items": [doc.asdict() for doc in docs.items]
     })
 
@@ -42,17 +50,24 @@ def index(args):
 @use_args({
     "lat": Arg(float, required=True),
     "lon": Arg(float, required=True),
+    "radius": Arg(float, required=True),
     "page": Arg(int, default=1),
     "per_page": Arg(int, default=20),
 })
 def nearby(args):
     docs = Disaster.objects(
-        geometry__coordinates__in=[args["lat"], args["lon"]]
+        geometry__near={
+            "type": "Point",
+            "coordinates": [args["lon"], args["lat"]],
+        },
+        geometry__max_distance=args["radius"],
     ).paginate(args["page"], min(args["per_page"], 20))
 
     return jsonify({
-        "total": docs.total,
-        "page": docs.page,
-        "per_page": docs.per_page,
+        "meta": {
+            "total": docs.total,
+            "page": docs.page,
+            "per_page": docs.per_page,
+        },
         "items": [doc.asdict() for doc in docs.items]
     })

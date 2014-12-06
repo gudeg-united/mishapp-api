@@ -17,7 +17,9 @@ class Disaster(db.Document):
     geometry = db.DictField()
     modified_at = db.DateTimeField(default=datetime.utcnow)
 
-    meta = {"indexes": [{"fields": ["geometry.coordinates"]}]}
+    meta = {
+        "indexes": [[("geometry", "2dsphere")]],
+    }
 
     def asdict(self):
         return {
@@ -28,3 +30,17 @@ class Disaster(db.Document):
             "properties": self["properties"],
             "geometry": self["geometry"],
         }
+
+    @classmethod
+    def create_unique(cls, **fields):
+        # TODO: use upsert!
+        if not cls.objects(source=fields["source"], source_id=fields["id"]).count():  # noqa
+            disaster = Disaster()
+            disaster.source = fields["source"]
+            disaster.source_id = fields["id"]
+            disaster.type = "Feature"
+            disaster.properties = fields["properties"]
+            fields["geometry"]["coordinates"].pop()
+            disaster.geometry = fields["geometry"]  # ["coordinates"]
+            disaster.save()
+            return disaster

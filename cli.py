@@ -19,15 +19,8 @@ def main():
         """
         data = fetch_hourly_data()
         for item in data["features"]:
-            # TODO: use upsert!
-            if not Disaster.objects(source="usgs", source_id=item["id"]).count():  # noqa
-                disaster = Disaster()
-                disaster.source = "usgs"
-                disaster.source_id = item["id"]
-                disaster.type = item["properties"]["type"]
-                disaster.properties = item["properties"]
-                disaster.geometry = item["geometry"]
-                disaster.save()
+            item["source"] = "usgs"
+            Disaster.create_unique(**item)
     manager.run()
 
 
