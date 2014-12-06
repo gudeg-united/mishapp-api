@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from datetime import datetime
 from flask.ext.mongoengine import MongoEngine
 
 db = MongoEngine()
@@ -14,6 +15,7 @@ class Disaster(db.Document):
     type = db.StringField()
     properties = db.DictField()
     geometry = db.DictField()
+    modified_at = db.DateTimeField(default=datetime.utcnow)
 
     meta = {"indexes": [{"fields": ["geometry.coordinates"]}]}
 
