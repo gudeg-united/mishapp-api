@@ -11,5 +11,11 @@ mishapp-api
     apt-get install python-pip
     pip install -r requirements.txt
 
+## Run Server
+
     # starts server at http://localhost:5000
     python cli.py runserver
+
+## Imports Data
+
+    python cli.py usgs
