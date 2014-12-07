@@ -7,7 +7,7 @@ Currently supported categories:
 
 * `earthquake`
 * `flood`
-* `tornado`
+* `hurricane`
 
 ### Get Latest Disaster Reports
 

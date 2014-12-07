@@ -21,7 +21,7 @@ _BASE_URL = (
 
 DISASTER_TYPE_MAPPER = {
     "Earthquakes": "earthquake",
-    "Tropical cyclones": "tornado",
+    "Tropical cyclones": "hurricane",
     "Floods": "flood",
 }
 
