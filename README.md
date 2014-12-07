@@ -19,3 +19,4 @@ mishapp-api
 ## Imports Data
 
     python cli.py usgs
+    python cli.py gdacs
