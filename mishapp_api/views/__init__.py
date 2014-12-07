@@ -44,7 +44,10 @@ def index(args):
     q = Disaster.objects
     if args["category"]:
         q = q(properties__type=args["category"])
-    docs = q.paginate(args["page"], min(args["per_page"], 20))
+    docs = q.order_by("-modified_at").paginate(
+        args["page"],
+        min(args["per_page"], 20),
+        )
 
     return jsonify({
         "meta": {
@@ -77,7 +80,10 @@ def nearby(args):
     )
     if args["category"]:
         q = q(properties__type=args["category"])
-    docs = q.paginate(args["page"], min(args["per_page"], 20))
+    docs = q.order_by("-modified_at").paginate(
+        args["page"],
+        min(args["per_page"], 20),
+        )
 
     return jsonify({
         "meta": {

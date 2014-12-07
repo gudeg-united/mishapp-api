@@ -33,6 +33,7 @@ class Disaster(db.Document):
             "type": self["type"],
             "properties": self["properties"],
             "geometry": self["geometry"],
+            "modified_at": self["modified_at"].isoformat(),
         }
 
     @classmethod
