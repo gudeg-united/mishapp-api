@@ -149,3 +149,29 @@ Error Code:
 * `200`: Request succeed.
 * `400`: Invalid request or parameters.
 * `404`: Empty result or incorrect URL.
+
+### Verify Disaster Report
+
+Request:
+
+    GET /disasters/verify
+
+Params:
+
+* `lon`: Longitude.
+* `lat`: Latitude.
+* `radius`: Radius in meters.
+
+Response:
+
+```json
+{
+  "message": "OK"
+}
+```
+
+Error Code:
+
+* `200`: Request succeed.
+* `400`: Invalid request or parameters.
+* `404`: Empty result or incorrect URL.

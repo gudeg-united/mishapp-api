@@ -71,3 +71,23 @@ def nearby(args):
         },
         "items": [doc.asdict() for doc in docs.items]
     })
+
+
+@disaster_api.route("/disasters/verify")
+@use_args({
+    "lat": Arg(float, required=True),
+    "lon": Arg(float, required=True),
+    "radius": Arg(float, required=True),
+})
+def verify(args):
+    counter = Disaster.objects(
+        geometry__near={
+            "type": "Point",
+            "coordinates": [args["lon"], args["lat"]],
+        },
+        geometry__max_distance=args["radius"],
+    ).count()
+
+    if counter > 0:
+        return jsonify({"message": "OK"})
+    return jsonify({"message": "Not found"}), 404
