@@ -87,7 +87,7 @@ Params:
 * `per_page`: Items per page. Max. is 20.
 * `lon`: Longitude.
 * `lat`: Latitude.
-* `radius`: Radius in meters.
+* `radius`: Radius in meters. Must greater then equal zero.
 
 Response:
 
@@ -160,7 +160,7 @@ Params:
 
 * `lon`: Longitude.
 * `lat`: Latitude.
-* `radius`: Radius in meters.
+* `radius`: Radius in meters. Must greater than equal zero.
 
 Response:
 
