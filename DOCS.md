@@ -13,6 +13,7 @@ Params:
 
 * `page`: Paging number. Default to 1.
 * `per_page`: Items per page. Max. is 20.
+* `category`: Disaster category, e.g. `earthquake`.
 
 Response:
 
@@ -88,6 +89,7 @@ Params:
 * `lon`: Longitude.
 * `lat`: Latitude.
 * `radius`: Radius in meters. Must greater then equal zero.
+* `category`: Disaster category, e.g. `earthquake`.
 
 Response:
 
@@ -161,6 +163,7 @@ Params:
 * `lon`: Longitude.
 * `lat`: Latitude.
 * `radius`: Radius in meters. Must greater than equal zero.
+* `category`: Disaster category, e.g. `earthquake`.
 
 Response:
 

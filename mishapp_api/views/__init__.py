@@ -38,9 +38,13 @@ def handle_not_found(err):
 @use_args({
     "page": Arg(int, default=1),
     "per_page": Arg(int, default=20),
+    "category": Arg(str),
 })
 def index(args):
-    docs = Disaster.objects.paginate(args["page"], min(args["per_page"], 20))
+    q = Disaster.objects
+    if args["category"]:
+        q = q(properties__type=args["category"])
+    docs = q.paginate(args["page"], min(args["per_page"], 20))
 
     return jsonify({
         "meta": {
@@ -59,9 +63,10 @@ def index(args):
     "radius": Arg(float, validate=radius_gte_zero, required=True),
     "page": Arg(int, default=1),
     "per_page": Arg(int, default=20),
+    "category": Arg(str),
 })
 def nearby(args):
-    docs = Disaster.objects(
+    q = Disaster.objects(
         geometry__near={
             "$geometry": {
                 "type": "Point",
@@ -69,7 +74,10 @@ def nearby(args):
             },
             "$maxDistance": args["radius"],
         },
-    ).paginate(args["page"], min(args["per_page"], 20))
+    )
+    if args["category"]:
+        q = q(properties__type=args["category"])
+    docs = q.paginate(args["page"], min(args["per_page"], 20))
 
     return jsonify({
         "meta": {
@@ -86,9 +94,10 @@ def nearby(args):
     "lat": Arg(float, required=True),
     "lon": Arg(float, required=True),
     "radius": Arg(float, validate=radius_gte_zero, required=True),
+    "category": Arg(str),
 })
 def verify(args):
-    counter = Disaster.objects(
+    q = Disaster.objects(
         geometry__near={
             "$geometry": {
                 "type": "Point",
@@ -96,7 +105,10 @@ def verify(args):
             },
             "$maxDistance": args["radius"],
         },
-    ).count()
+    )
+    if args["category"]:
+        q = q(properties__type=args["category"])
+    counter = q.count()
 
     if counter > 0:
         return jsonify({"message": "OK"})
