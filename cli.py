@@ -6,7 +6,8 @@ from __future__ import unicode_literals
 from flask.ext.script import Manager
 
 from mishapp_api import create_app
-from mishapp_api.helpers.usgs import fetch_hourly_data
+from mishapp_api.helpers import usgs as _usgs
+from mishapp_api.helpers import gdacs as _gdacs
 from mishapp_api.database import Disaster
 
 
@@ -17,10 +18,21 @@ def main():
     def usgs():
         """Fetches data from USGS
         """
-        data = fetch_hourly_data()
+        data = _usgs.fetch_hourly_data()
         for item in data["features"]:
             item["source"] = "usgs"
+            item["geometry"]["coordinates"].pop()
             Disaster.create_unique(**item)
+
+    @manager.command
+    def gdacs():
+        """Fetches data from gdacs
+        """
+        data = _gdacs.fetch_daily_data()
+        for item in data:
+            item["source"] = "gdacs"
+            Disaster.create_unique(**item)
+
     manager.run()
 
 

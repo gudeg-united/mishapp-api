@@ -40,7 +40,6 @@ class Disaster(db.Document):
             disaster.source_id = fields["id"]
             disaster.type = "Feature"
             disaster.properties = fields["properties"]
-            fields["geometry"]["coordinates"].pop()
-            disaster.geometry = fields["geometry"]  # ["coordinates"]
+            disaster.geometry = fields["geometry"]
             disaster.save()
             return disaster
