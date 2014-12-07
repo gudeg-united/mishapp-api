@@ -82,10 +82,13 @@ def nearby(args):
 def verify(args):
     counter = Disaster.objects(
         geometry__near={
-            "type": "Point",
-            "coordinates": [args["lon"], args["lat"]],
+            "$geometry": {
+                "type": "Point",
+                "coordinates": [args["lon"], args["lat"]],
+            },
+            "$maxDistance": args["radius"],
         },
-        geometry__max_distance=args["radius"],
+        # geometry__max_distance=args["radius"],  # for Mongo < 2.6
     ).count()
 
     if counter > 0:
