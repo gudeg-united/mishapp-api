@@ -6,11 +6,17 @@ from __future__ import unicode_literals
 from flask import Blueprint
 from flask import jsonify
 from webargs import Arg
+from webargs import ValidationError
 from webargs.flaskparser import use_args
 
 from mishapp_api.database import Disaster
 
 disaster_api = Blueprint("disaster", __name__)
+
+
+def radius_gte_zero(val):
+    if val < 0:
+        raise ValidationError("radius must greater than equal 0")
 
 
 @disaster_api.errorhandler(400)
@@ -50,17 +56,19 @@ def index(args):
 @use_args({
     "lat": Arg(float, required=True),
     "lon": Arg(float, required=True),
-    "radius": Arg(float, required=True),
+    "radius": Arg(float, validate=radius_gte_zero, required=True),
     "page": Arg(int, default=1),
     "per_page": Arg(int, default=20),
 })
 def nearby(args):
     docs = Disaster.objects(
         geometry__near={
-            "type": "Point",
-            "coordinates": [args["lon"], args["lat"]],
+            "$geometry": {
+                "type": "Point",
+                "coordinates": [args["lon"], args["lat"]],
+            },
+            "$maxDistance": args["radius"],
         },
-        geometry__max_distance=args["radius"],
     ).paginate(args["page"], min(args["per_page"], 20))
 
     return jsonify({
@@ -77,7 +85,7 @@ def nearby(args):
 @use_args({
     "lat": Arg(float, required=True),
     "lon": Arg(float, required=True),
-    "radius": Arg(float, required=True),
+    "radius": Arg(float, validate=radius_gte_zero, required=True),
 })
 def verify(args):
     counter = Disaster.objects(
@@ -88,7 +96,6 @@ def verify(args):
             },
             "$maxDistance": args["radius"],
         },
-        # geometry__max_distance=args["radius"],  # for Mongo < 2.6
     ).count()
 
     if counter > 0:
