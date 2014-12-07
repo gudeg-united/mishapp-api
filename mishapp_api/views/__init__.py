@@ -101,3 +101,9 @@ def verify(args):
     if counter > 0:
         return jsonify({"message": "OK"})
     return jsonify({"message": "Not found"}), 404
+
+
+@disaster_api.route("/disasters/<id>")
+def get(id):
+    disaster = Disaster.objects.get_or_404(id=id)
+    return jsonify(disaster.asdict())
