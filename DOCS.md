@@ -3,6 +3,12 @@ API Documentation
 
 ## Disaster
 
+Currently supported categories:
+
+* `earthquake`
+* `flood`
+* `tornado`
+
 ### Get Latest Disaster Reports
 
 Request:
