@@ -8,6 +8,7 @@ from datetime import datetime
 
 from Pubnub import Pubnub
 from flask.ext.mongoengine import MongoEngine
+from flask import current_app
 
 db = MongoEngine()
 
@@ -49,9 +50,10 @@ class Disaster(db.Document):
 
     @classmethod
     def post_save(cls, sender, document, **kwargs):
+        cfg = current_app.config
         pubnub = Pubnub(
-            publish_key="pub-c-ca58a43f-c2b7-4a8b-b469-9e85a0b7fae4",
-            subscribe_key="sub-c-40e909a0-7dff-11e4-bfb6-02ee2ddab7fe",
+            publish_key=cfg["PUBNUB_PUB_KEY"],
+            subscribe_key=cfg["PUBNUB_SUB_KEY"],
             ssl_on=False,
             )
         pubnub.publish(channel="globaldisaster",
